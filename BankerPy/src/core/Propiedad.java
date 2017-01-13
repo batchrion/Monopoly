@@ -17,9 +17,8 @@ import javax.swing.SpinnerNumberModel;
  *
  * @author jsilvero
  */
-class Propiedad {
-
-    private String nombre;
+public class Propiedad extends Casilla {
+    
     private boolean monopolio;
     private boolean hipotecada;
     private Player duenho;
@@ -36,11 +35,12 @@ class Propiedad {
         }
     }
 
-    public Propiedad(int costo, int valorHipoteca, int renta) {
+    public Propiedad(int numero, String nombre, int costo, int valorHipoteca, int renta) {
+        super(numero, nombre);
         this.costo = costo;
         this.valorHipoteca = valorHipoteca;
         this.renta = renta;
-    }
+    }    
 
     public boolean isMonopolio() {
         return monopolio;
@@ -96,7 +96,7 @@ class Propiedad {
         SpinnerNumberModel sModel = new SpinnerNumberModel(100, 100, 10000, 100);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(new Label("¿Desea comprar " + this.nombre + "?"));
+        panel.add(new Label("¿Desea comprar " + this.getNombre() + "?"));
 
         JSpinner spinner = new JSpinner(sModel);
         spinner.setEditor(new JSpinner.DefaultEditor(spinner));
@@ -124,7 +124,7 @@ class Propiedad {
                     if (mejorOferta != 0) {
                         this.costo = mejorOferta;
                         //players.get(0).comprarPropiedad(this);
-                        JOptionPane.showMessageDialog(null, this.nombre + " vendido a " + players.get(0).getNombre()
+                        JOptionPane.showMessageDialog(null, this.getNombre() + " vendido a " + players.get(0).getNombre()
                                 + " por " + mejorOferta);
                         return mejorOferta;
                     }

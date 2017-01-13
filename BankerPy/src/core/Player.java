@@ -6,6 +6,7 @@
 package core;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Player {
     private boolean tiradaAnteriorDobles;
     private int posicionActual;
     private int jailTime;
+    public static int SUELDO = 2000;
 
     public Player(String nombre) {
         this.nombre = nombre;
@@ -109,5 +111,77 @@ public class Player {
     }
     
     
+    public void comprarPropiedad(Propiedad propiedad){
+        int costo = propiedad.getCosto();
+        if (this.dinero < costo){
+            JOptionPane.showMessageDialog(null, "No tienes dinero suficiente para comprar "+propiedad.getNombre());
+            //hipotecar
+        }else{
+           this.dinero -= costo;
+           this.propiedades.add(propiedad);
+           propiedad.setDuenho(this);
+        }
+    }
+    
+    public void pagarRenta(Propiedad propiedad){
+        int renta = propiedad.getRenta();
+        if (this.dinero < renta){
+            //hipotecar
+        }else{
+            this.dinero -= renta;
+            propiedad.getDuenho().dinero += renta;
+        }
+    }
+    
+    public void hipotecar(Propiedad propiedad){
+        if (!propiedad.isHipotecada()){
+            propiedad.setHipotecada(true);
+            this.dinero += propiedad.getValorHipoteca();
+        }
+    }
+    
+    public void mover(int cantidad){
+        if (this.posicionActual + cantidad < 40)
+            this.posicionActual += cantidad;
+        else{//paso por go
+            this.posicionActual += cantidad - 40;
+            this.dinero += SUELDO;
+        }
+    }
+    
+    public int roll(){
+        int r1 = (int) (Math.random() * 6 + 1);
+        int r2 = (int) (Math.random() * 6 + 1);
+        System.out.println(r1+","+r2);
+        if (r1 == r2){
+            this.dobles++;
+            this.tiradaAnteriorDobles = true;
+        }else{
+            this.dobles = 0;
+            this.tiradaAnteriorDobles = false;
+        }
+        
+        return r1 + r2;
+    }
+    
+    public void encarcelar(){
+        inJail = true;
+        tiradaAnteriorDobles = false;
+        dobles = 0;
+        posicionActual = 10;
+        jailTime = 0;
+    }
+    
+    public static void main(String[] args) {
+        Player p = new Player("p1");
+        p.setPosicionActual(0);
+        p.setDobles(0);
+        p.setTiradaAnteriorDobles(false);
+        //while (p.dobles<3){
+            do{
+                p.roll();
+            }while(p.isTiradaAnteriorDobles());
+        //}
+    }
     
 }
